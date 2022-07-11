@@ -1,9 +1,9 @@
-from django.http import JsonResponse
+from rest_framework.response import Response
 
 
-def build_json_resp(data, code=0, err=''):
-    return JsonResponse(data={
+def build_json_resp(data, code=0, error=''):
+    return Response(data={
         'code': code,
-        'err': err,
+        'error': error,
         'data': data
     })

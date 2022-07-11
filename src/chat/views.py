@@ -1,17 +1,16 @@
-from django.views.decorators.http import require_http_methods
+from rest_framework.decorators import api_view
 from django.contrib.auth.decorators import login_required
-from django.core import serializers
 from common.utils.http import build_json_resp
 from chat.models import Chatroom, ChatRecord
 
 
-@require_http_methods(['POST'])
+@api_view(['POST'])
 @login_required()
 def send_message(request, chatroom_id):
-    params = request.POST
+    data = request.data
     chatroom = Chatroom.objects.get(id=chatroom_id)
-    chat_record = ChatRecord.objects.create(
-        chatroom=chatroom, user=request.user, content=params['content'])
+    ChatRecord.objects.create(
+        chatroom=chatroom, user=request.user, content=data['content'])
     return build_json_resp(data={
         'user': {
             'username': request.user.username,
@@ -20,11 +19,11 @@ def send_message(request, chatroom_id):
         'chatroom': {
             'name': chatroom.name
         },
-        'content': params['content']
+        'content': data['content']
     })
 
 
-@require_http_methods(['GET'])
+@api_view(['GET'])
 def get_message(request, chatroom_id):
     chat_records = ChatRecord.objects.filter(
         chatroom__id=chatroom_id).order_by('-send_time')
@@ -36,7 +35,7 @@ def get_message(request, chatroom_id):
     ])
 
 
-@require_http_methods(['GET'])
+@api_view(['GET'])
 def get_chatroom(request):
     chatrooms = ChatRecord.objects.order_by('create_time')
     return build_json_resp(data=[
@@ -48,17 +47,17 @@ def get_chatroom(request):
     )
 
 
-@require_http_methods(['GET'])
+@api_view(['GET'])
 def get_chatroom_user(request, chatroom_id):
     pass
 
 
-@require_http_methods(['POST'])
+@api_view(['POST'])
 @login_required()
 def create_chatroom(request):
-    params = request.POST
+    data = request.data
     chatroom = Chatroom.objects.create(
-        name=params['name'],
+        name=data['name'],
         creator=request.user
     )
     return build_json_resp(data={
@@ -68,7 +67,7 @@ def create_chatroom(request):
     })
 
 
-@require_http_methods(['DELETE'])
+@api_view(['DELETE'])
 @login_required()
 def delete_chatroom(request, chatroom_id):
     chatroom = Chatroom.objects.get(id=chatroom_id)
