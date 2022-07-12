@@ -1,13 +1,11 @@
-from xml.etree.ElementInclude import include
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 from rest_framework.authtoken import views
-
+from chat.views import test
 api_urlpatterns = [
     path('api-token-auth/', views.obtain_auth_token),
-    
+    path('test/', test)
 ]
-
 
 
 urlpatterns = [

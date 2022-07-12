@@ -14,8 +14,8 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
-
-@receiver(post_save, sender='user.User')
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        Token.objects.create(user=instance)
+    class Meta:
+        indexes = [
+            models.Index(fields=['username']),
+            models.Index(fields=['email']),
+        ]

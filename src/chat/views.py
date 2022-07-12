@@ -79,3 +79,12 @@ def delete_chatroom(request, chatroom_id):
         'creator': chatroom.user.username,
         'create_time': chatroom.create_time
     })
+
+
+@api_view(['GET'])
+@login_required()
+def test(request):
+    return build_json_resp(data={
+        'email': request.user.email,
+        'username': request.user.username
+    })
